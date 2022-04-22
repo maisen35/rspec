@@ -1,11 +1,34 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it "姓、名を登録すると、姓名が取得できること" do
-    user = User.new(
-      last_name: "侍",
-      first_name: "太郎"
-      )
-      expect(user.full_name).to eq "侍 太郎"
+  let(:user) { User.new(name: 'たろう', age: age) }
+  shared_context '12歳の場合' do
+    let(:age) { 12 }
+  end
+  shared_context '13歳の場合' do
+    let(:age) { 13 }
+  end
+  describe '#greet' do
+    subject { user.greet }
+    context '12歳以下の場合' do
+      include_context '12歳の場合'
+      it { is_expected.to eq 'ぼくはたろうだよ' }
     end
+    context '13歳以上の場合' do
+      include_context '13歳の場合'
+      it { is_expected.to eq '僕はたろうです' }
+    end
+  end
+
+  describe '#child?' do
+    subject { user.child? }
+    context '12歳以下の場合' do
+      include_context '12歳の場合'
+      it { is_expected.to eq true }
+    end
+    context '13歳以上の場合' do
+      include_context '13歳の場合'
+      it { is_expected.to eq false }
+    end
+  end
 end
